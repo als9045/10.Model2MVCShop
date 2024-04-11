@@ -1,7 +1,6 @@
 package com.model2.mvc.web.user;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +9,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,7 +32,11 @@ public class UserRestController {
 	@Qualifier("userServiceImpl")
 	private UserService userService;
 	//setter Method 구현 않음
-		
+	@Value("#{commonProperties['pageUnit']}")
+	int pageUnit;
+	
+	@Value("#{commonProperties['pageSize']}")
+	int pageSize;
 	public UserRestController(){
 		System.out.println(this.getClass());
 	}
@@ -66,8 +70,20 @@ public class UserRestController {
 	public Map<String, Object> login(	@RequestBody Search search, Model model,
 									HttpServletRequest request ) throws Exception{
 		System.out.println("/user/json/listUser : POST");
+		if(search.getCurrentPage() ==0 ){
+			search.setCurrentPage(1);
+		}else {
+			
+			search.setCurrentPage(search.getCurrentPage()+1);
+			
+		}
+
+		search.setPageSize(pageSize);
 		
-		Map<String, Object> map =userService.getUserList(search);
+		
+		
+		
+		Map<String, Object> map =userService.autoUserList(search);
 		List<User>  users = (List<User>)map.get("list");
 		List<String> lists = new ArrayList();
 		List<String> userName = new ArrayList();

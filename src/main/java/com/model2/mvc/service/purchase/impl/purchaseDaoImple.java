@@ -51,22 +51,30 @@ public class purchaseDaoImple implements PurchaseDao {
 	public Map<String, Object> getPurchaseList(Search search, String userId) throws Exception {
 		Map<String , Object>  map = new HashMap<String, Object>();
 		
+		
+		System.out.println("Daoimple gerPurchase");
+		
 		map.put("search", search);
 		map.put("buyerId", userId);
 	
 		
 		List<Purchase> list = sqlSession.selectList("PurchaseMapper.getPurchaseList", map); 
 		
+		
+		System.out.println("list==="+list);
+		
 		for (int i = 0; i < list.size(); i++) {
 			list.get(i).setBuyer((User)sqlSession.selectOne("UserMapper.getUser", list.get(i).getBuyer().getUserId()));
 			list.get(i).setPurchaseProd((Product)sqlSession.selectOne("ProductMapper.getProduct", list.get(i).getPurchaseProd().getProdNo()));
 		}
+		System.out.println("list=========="+list);
 		
 		map.put("totalCount", sqlSession.selectOne("PurchaseMapper.getTotalCount", map));
 
 		map.put("list", list);
-
-	return map;
+		
+		
+		return map;
 	}
 	
 	@Override

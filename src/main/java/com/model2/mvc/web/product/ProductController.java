@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.model2.mvc.common.Page;
 import com.model2.mvc.common.Search;
@@ -76,12 +77,13 @@ public class ProductController {
 	
 	//@RequestMapping("/addProduct.do")
 	@RequestMapping(value = "addProduct" , method = RequestMethod.POST)
-	public String addProduct( @ModelAttribute("product") Product product ,  Model model,
-												HttpServletRequest req ) throws Exception {
+	public String addProduct( @ModelAttribute("product") Product product, Model model,
+								@RequestParam("file") MultipartFile[] files,
+								HttpServletRequest request) throws Exception {
 		System.out.println(product);
-		if(FileUpload.isMultipartContent(req)) {
+		if(FileUpload.isMultipartContent(request)) {
 			
-			String temDir ="C:\\workspace\\10.Model2MVCShop(Ajax)\\src\\main\\webapp\\images\\uploadFiles\\";
+			String temDir ="C:\\workspace\\10.Model2MVCShop(Ajax) (1)\\src\\main\\webapp\\images\\uploadFiles\\";
 			
 			DiskFileUpload fileUpload = new DiskFileUpload();
 			fileUpload.setRepositoryPath(temDir);
@@ -90,13 +92,13 @@ public class ProductController {
 			
 			//업로드한 파일이 허용된 크기 이내인지 확인하는 데 사용
 			//허용된 크기 이내일 경우 참
-			if(req.getContentLength() < fileUpload.getSizeMax()) {
+			if(request.getContentLength() < fileUpload.getSizeMax()) {
 			
 				//텍스트 파일을 파싱하거나, 텍스트 기반 데이터를 분할하고 처리
 				StringTokenizer token = null;
 				
 				//HTTP 요청을 분석하고 업로드된 파일을 fileItemList에 저장
-				List fileItemList = fileUpload.parseRequest(req);
+				List fileItemList = fileUpload.parseRequest(request);
 				
 				//이미지 몇개를 업로드 했는지 확인
 				int size = fileItemList.size();
@@ -140,6 +142,30 @@ public class ProductController {
 		}
 	}
 		}
+//		List<String> fileNames = new ArrayList<>();
+//		for (MultipartFile file : files) {
+//	        if (!file.isEmpty()) {
+//	            String originalFileName = file.getOriginalFilename();
+//	            String uploadPath = request.getServletContext().getRealPath("/images/uploadFiles/");
+//	            //String uploadPath = "C:\\Users\\bitcamp\\git\\model2MVCShop\\07.Model2MVCShop(URI,pattern)\\src\\main\\webapp\\images\\uploadFiles";
+//	            System.out.println("파일저장경로"+uploadPath);
+//	            File uploadDir = new File(uploadPath);
+//	            if (!uploadDir.exists()) {
+//	                uploadDir.mkdirs(); // 디렉토리가 존재하지 않으면 생성
+//	            }
+//
+//	            try {
+//	                String uploadedFilePath = uploadPath + File.separator + originalFileName;
+//	                file.transferTo(new File(uploadedFilePath));
+//	                // 파일 이름을 리스트에 추가
+//	                fileNames.add(originalFileName);
+//	                product.setFileName(fileNames.toString().replace("[", "").replace("]", ""));
+//	            } catch (IOException e) {
+//	                e.printStackTrace();
+//	                // 파일 업로드 중 오류 발생 시 예외 처리
+//	            }
+//	        }
+//	    }
 					productService.addProduct(product);
 		
 					// Model 과 View 연결
@@ -174,6 +200,7 @@ public class ProductController {
 		// Business logic 수행
 		Map<String , Object> map=productService.getProductList(search);
 		
+		System.out.println("map==="+map);
 		String menu = request.getParameter("menu");
 		System.out.println("MEMU==="+menu);
 		
@@ -183,7 +210,7 @@ public class ProductController {
 		
 		// Model 과 View 연결
 		model.addAttribute("list", map.get("list"));
-		model.addAttribute("resultPage", resultPage);
+		//model.addAttribute("resultPage", resultPage);
 		model.addAttribute("search", search);
 		model.addAttribute("menu" , menu);
 		

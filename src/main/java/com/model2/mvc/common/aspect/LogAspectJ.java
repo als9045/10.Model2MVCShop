@@ -1,11 +1,13 @@
 package com.model2.mvc.common.aspect;
 
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.springframework.stereotype.Component;
 
 /*
  * FileName : PojoAspectJ.java
  *	:: XML 에 선언적으로 aspect 의 적용   
   */
+@Component
 public class LogAspectJ {
 
 	///Constructor

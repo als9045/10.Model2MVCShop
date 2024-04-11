@@ -48,26 +48,49 @@
 	 </update>
 		 
 	<!-- SQL : SELECT LIST -->
-	<select  id="getUserList"  parameterType="search"	resultMap="userSelectMap">
-	  	SELECT *
+		<select  id="getUserList"  parameterType="search"	resultMap="userSelectMap">
+	  SELECT *
 	  	FROM (	SELECT inner_table.* , ROWNUM AS row_seq
-	  					FROM		(	SELECT user_id , user_name , email
+	  					            FROM(	SELECT user_id , user_name , email
 											FROM users
 											<if test="searchCondition != null">
 												<where>
 													<if test="searchCondition == 0 and searchKeyword !='' ">
-										 				user_id = #{searchKeyword}
+										 				user_id LIKE '%' || #{searchKeyword} || '%'
 													</if>
 													<if test="searchCondition == 1 and searchKeyword !='' ">
-										 				user_name = #{searchKeyword}
+										 				user_name LIKE '%' || #{searchKeyword} || '%'
 													</if>
 												</where>
 											</if>
 											ORDER BY user_id ) inner_table
 						WHERE ROWNUM &lt;= #{endRowNum} )
-		WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum} 
+		WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum}  
 	 </select>
-	 	<!--  위 두번째 subQuery 의  
+	 
+	 <select  id="autoUserList"  parameterType="search"	resultMap="userSelectMap">
+	 SELECT *
+	  	FROM (	SELECT inner_table.* , ROWNUM AS row_seq
+	  					FROM		(	SELECT user_id , user_name , email
+											FROM users
+											<if test="searchKeyword != null">
+												<where>
+													<if test="searchCondition == 0 and searchKeyword !='' ">
+										 				user_id LIKE '%' || #{searchKeyword} || '%'
+													</if>
+													<if test="searchCondition == 1 and searchKeyword !='' ">
+										 				user_name LIKE '%' || #{searchKeyword} || '%'
+													</if>
+													
+												</where>
+											</if>
+											ORDER BY user_id ) inner_table)
+					<!-- 	WHERE ROWNUM &lt;= #{endRowNum} )
+		WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum}  -->
+	 </select>
+	 	<!--
+	 	
+	 	  위 두번째 subQuery 의  
 	 			WHERE ROWNUM &lt;= #{endRowNum} ) 는
 	 			WHERE ROWNUM <= #{endRowNum} ) 의미이며..
 	 			< 는 keyword 로 &lt; 를	사용.

@@ -108,14 +108,15 @@ public class UserController {
 	public String login() throws Exception{
 		
 		System.out.println("/user/logon : GET");
-
+		
 		return "redirect:/user/loginView.jsp";
 	}
 	
 	@RequestMapping( value="login", method=RequestMethod.POST )
 	public String login(@ModelAttribute("user") User user , HttpSession session ) throws Exception{
-		
+		System.out.println("user ==="+user);
 		System.out.println("/user/login : POST");
+		System.out.println("iscode"+user.isCode());
 		//Business Logic
 		User dbUser=userService.getUser(user.getUserId());
 		
@@ -156,14 +157,17 @@ public class UserController {
 	public String listUser( @ModelAttribute("search") Search search , Model model , HttpServletRequest request) throws Exception{
 		
 		System.out.println("/user/listUser : GET / POST");
+		System.out.println("search===="+search);
 		
 		if(search.getCurrentPage() ==0 ){
 			search.setCurrentPage(1);
 		}
 		search.setPageSize(pageSize);
+		System.out.println("search===="+search);
 		
 		// Business logic ผ๖วเ
 		Map<String , Object> map=userService.getUserList(search);
+		System.out.println("map"+map);
 		
 		Page resultPage = new Page( search.getCurrentPage(), ((Integer)map.get("totalCount")).intValue(), pageUnit, pageSize);
 		System.out.println(resultPage);

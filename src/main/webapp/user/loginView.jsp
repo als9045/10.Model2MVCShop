@@ -16,7 +16,7 @@
 	<script type="text/javascript">
 	   
 		$( function() {
-			
+				
 			//==> DOM Object GET 3가지 방법 ==> 1. $(tagName) : 2.(#id) : 3.$(.className)
 			$("#userId").focus();
 			

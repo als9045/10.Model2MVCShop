@@ -96,13 +96,6 @@
 				<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 			</tr>
 			<tr>
-				<td width="104" class="ct_write">구매수량</td>
-				<td bgcolor="D6D6D6" width="1"></td>
-				<td class="ct_write01"><input type="text" name="prodCount"
-					value="${purchase.prodCount}"class="ct_input_g" style="width: 100px; height: 19px"
-					maxLength="20" /><b>남은수량:${product.prodCount}개</b></td>
-			</tr>
-			<tr>
 				<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 			</tr>
 			<tr>
@@ -150,7 +143,7 @@
 				<td width="104" class="ct_write">배송희망일자</td>
 				<td bgcolor="D6D6D6" width="1"></td>
 				<td width="200" class="ct_write01"><input type="text"
-					readonly="readonly" name="divyDate" value="${purchase.divyDate.substring(0, 10).replace('-','')}"class="ct_input_g"
+					readonly="readonly" name="divyDate" value="${purchase.divyDate}"class="ct_input_g"
 					style="width: 100px; height: 19px" maxLength="20" /> <img
 					src="../images/ct_icon_date.gif" width="15" height="15"
 					/>

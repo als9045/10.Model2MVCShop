@@ -76,7 +76,7 @@
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-		<img src="/images/uploadFiles/${product.fileName}" width="100px" height="100px" align="absmiddle"/>
+		<img src="/images/uploadFiles/${product.fileName}" width="120px" height="120px"/>
 		</td>
 	</tr>
 	<tr>

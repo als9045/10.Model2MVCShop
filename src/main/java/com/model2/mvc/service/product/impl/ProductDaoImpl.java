@@ -37,7 +37,7 @@ public class ProductDaoImpl implements ProductDao{
 	}
 	@Override
 	public Product getProduct(int prodNo) throws Exception {
-		// TODO Auto-generated method stub
+		System.out.println("DAOIMPLE=============================");
 		return sqlSession.selectOne("ProductMapper.getProduct",prodNo);
 	}
 	@Override

@@ -1,10 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
-    
+    pageEncoding="EUC-KR"%>    
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-	<script type="text/javascript">
+<html>
+<head>
+<title>상품목록조회</title>
+<link rel="stylesheet" href="/css/admin.css" type="text/css">
+<!-- jQuery UI CDN(Content Delivery Network) 호스트 사용 -->
+<!-- CDN(Content Delivery Network) 호스트 사용 -->
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
 	
 		function fncGetProductList(currentPage) {
 			$("#currentPage").val(currentPage)
@@ -14,6 +20,105 @@
 		//===========================================//
 		//==> 추가된부분 : "검색" ,  userId link  Event 연결 및 처리
 		 $(function() {
+			 
+			 //초기 로딩 시 스크롤바의 높이와 문서의 높이를 비교 스크롤 아래 가면 데이터 로딩
+		 /* 	 if($(window).height() == $(document).height()){
+				
+				 loadMoreDate()
+				 
+			 }  */
+			 //현재 페이지와 무한스크롤 활성화 여부
+			 let currentPage = 1;
+			 let infiniteScrollEnabled = true;
+			 
+			 //무한스크롤(스크롤생성 event??)
+			 window.addEventListener("scroll", function() {			 
+			 
+			//문서의 전체높이
+			 let scrollHeight = document.documentElement.scrollHeight;
+			 
+			//window.innerHeight = 핸재보이는 브라우저 창 높이
+			//window.scrollY 현재 스크롤 바 위치
+			 let scrollPosition = window.innerHeight + window.scrollY;
+			console.log(scrollPosition)
+			console.log(scrollHeight)
+			
+			///체크해가면서 window와 document확인
+			console.log("cex"+infiniteScrollEnabled)
+			 
+			//scrollHeight = 문서전체높이  scrollPosition = 스크롤높이
+			//scrollHeight = scrollPosition == 최하단
+/* 			 if (infiniteScrollEnabled && (scrollHeight - scrollPosition) / scrollHeight === 0) {
+				    infiniteScrollEnabled = true; // 중복 요청을 막기 위해 활성화 상태를 비활성화로 변경
+				    loadMoreData();
+				  }
+				}); */
+				
+		     ///scrollHeight - scrollPosition < 10은 테스트용 조건이므로 최소한의 호출을 하도록 수정할것
+		     //scrollHeight - scrollPosition < 1 변경해도 완려
+			 if (infiniteScrollEnabled && scrollHeight - scrollPosition < 1) {
+				    infiniteScrollEnabled = false; // 중복 요청을 막기 위해 활성화 상태를 비활성화로 변경
+				    loadMoreData();
+				  }
+				});
+			
+			
+			 function loadMoreData() {
+				    let searchConditionValue = $('select[name="searchCondition"]').val();
+				    let searchKeywordValue = $('input[name="searchKeyword"]').val();
+				    let currentPageValue = parseInt($('input[name="currentPage"]').val());
+				    currentPageValue++;
+
+				    $('input[name="currentPage"]').val(currentPageValue);
+
+				    $.ajax({
+				        url: "/product/json/listProduct",
+				        data: JSON.stringify({
+				            currentPage: currentPageValue,
+				            searchKeyword: searchKeywordValue,
+				            searchCondition: searchConditionValue
+				        }),
+				        method: "POST",
+				        contentType: "application/json",
+				        dataType: "json",
+				        success: function (data, status) {
+				            let prodList = data.list;
+				            let resultPage = data.resultPage;
+
+				            prodList.forEach(function (product) {
+				                // 동적으로 생성되는 행에 .product-row 클래스를 추가하여 스타일 적용
+				                let row = "<tr class='ct_list_pop'>"
+				                    + "<td align=center width=100>" + product.prodName + "</td>"
+				                    + "<td></td>"
+				                    + "<td align=center width=100>" + product.prodNo + "</td>"
+				                    + "<a href='/product/";
+
+				                if ("${param.menu}" === 'manage') {
+				                    row += "updateProduct?prodNo=" + product.prodNo + "&menu=manage";
+				                } else if ("${param.menu}" === 'search') {
+				                    row += "getProduct?prodNo=" + product.prodNo + "&menu=search";
+				                }
+
+				                row += "'/>"
+				                    + "<td></td>"
+				                    + "<td align=center>" + product.price + "</td>"
+				                    + "<td></td>"
+				                    + "<td align=center width=100>" + product.regDate + "</td>"
+				                    + "<td></td>"
+				                    + "</tr>";
+
+				                $('.cex').append(row);
+				            });
+
+				            infiniteScrollEnabled = true;
+				        },
+				    });
+				}
+
+			 
+			 
+			 
+			 
 			 
 			//==> 검색 Event 연결처리부분
 			//==> DOM Object GET 3가지 방법 ==> 1. $(tagName) : 2.(#id) : 3.$(.className)
@@ -113,28 +218,15 @@
 		});	
 
 </script>
-<html>
-<head>
-
-<title>상품목록조회</title>
-<link rel="stylesheet" href="/css/admin.css" type="text/css">
 
 
-<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-<script type="text/javascript">
-//검색 / page 두가지 경우 모두 Form 전송을 위해 JavaScrpt 이용  
-/* <!--
-function fncGetproductList(currentPage) {
-	document.getElementById("currentPage").value = currentPage;
-   	document.detailForm.submit();		
-}
---> */
-</script>
+
 </head>
 <body bgcolor="#ffffff" text="#000000">
 
 <div style="width:98%; margin-left:10px;">
-
+<input type="hidden" name="currentPage" value="1" />
+<input type="hidden" name="proNo" value="${product.prodNo}" />
 <form name="detailForm" action="/product/listProduct?menu=${menu}" method="post">
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
@@ -145,15 +237,9 @@ function fncGetproductList(currentPage) {
 		<td background="/images/ct_ttl_img02.gif" width="100%" style="padding-left:10px;">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-				<c:choose>
-					<c:when test = "${'manage' eq menu}">
-					<td width="93%" class="ct_ttl01">상품 목록조회
-					</c:when>
-					<c:when test = "${'search' eq menu}">
-					<td width="93%" class="ct_ttl01">상품검색
-					</c:when>
-				</c:choose>
-				
+					
+					<td width="93%" class="ct_ttl01">
+					${menu eq 'manage' ? "상품관리" : "상품목록조회"}	
 					
 					</td>
 				</tr>
@@ -175,7 +261,7 @@ function fncGetproductList(currentPage) {
 				<option value="1" ${ ! empty sera.search.searchCondition && search.searchCondition==0 ? "selected" : "" }>상품명</option>
 				
 		</select>
-			<input type="text" name="searchKeyword"  value="${! empty search.searchKeyword ? search.searchKeyword : ""}"  
+			<input type="text" name="searchKeyword"  value="${! empty search.searchKeyword ? search.searchKeyword : '' }"
 			class="ct_input_g" style="width:200px; height:19px" >
 		</td>
 		<td align="right" width="70">
@@ -197,8 +283,8 @@ function fncGetproductList(currentPage) {
 	</tr>
 </table>
 
-
-<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
+<!-- id는 테스트 후 삭제할것. 삭제하는 이유는 비종속 -->
+<table class="cex" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	<tr>
 		<td colspan="11"  >
 		전체  ${resultPage.totalCount } 건수, 현재 ${resultPage.currentPage}  페이지
@@ -208,7 +294,7 @@ function fncGetproductList(currentPage) {
 		<td class="ct_line02"></td>
 		<td class="ct_list_b" width="150">상품명</td>
 		<td class="ct_line02"></td>
-		<td class="ct_list_b" width="150">상품번호</td>
+		<td class="ct_list_b" width="150">이미지</td>
 		<td class="ct_line02"></td>
 		<td class="ct_list_b" width="250">가격</td>	
 		<td class="ct_line02" ></td>
@@ -230,7 +316,9 @@ function fncGetproductList(currentPage) {
 			<td></td>
 			<td align="center">${product.price}
 			<td></td>
-			<td align="center"width="100">${product.regDate}</td>
+			<td align="center"width="100">
+			<img src="/images/uploadFiles/${product.fileName}" width="100px" height="100px"/>
+			</td>
 			<td></td>		
 		</tr>
 		<tr>
@@ -243,7 +331,7 @@ function fncGetproductList(currentPage) {
 	
 
 
-<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
+<%-- <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	<tr>
 		<td align="center">
 		 <input type="hidden" id="currentPage" name="currentPage" value=""/>
@@ -253,7 +341,7 @@ function fncGetproductList(currentPage) {
     		</jsp:include>	
     	</td>
 	</tr>
-</table>
+</table> --%>
 <!--  페이지 Navigator 끝 -->
 
 </form>

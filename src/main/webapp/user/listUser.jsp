@@ -106,7 +106,8 @@
 						contentType: "application/json",
 						dataType:"json",
 						success: function(data){
-							console.log("data"+data )
+							console.log("data"+data.lstName )
+							console.log("data"+data.list)
 							if($("select[name= 'searchCondition']").val()=="0"){
 								response(data.list);
 							}else if($("select[name= 'searchCondition']").val()=="1"){

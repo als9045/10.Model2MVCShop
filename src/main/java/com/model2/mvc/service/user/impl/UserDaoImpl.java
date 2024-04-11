@@ -13,7 +13,7 @@ import com.model2.mvc.service.user.UserDao;
 
 
 //==> 회원관리 DAO CRUD 구현
-@Repository("userDaoImpl")
+@Repository
 public class UserDaoImpl implements UserDao{
 	
 	///Field
@@ -45,7 +45,11 @@ public class UserDaoImpl implements UserDao{
 	public List<User> getUserList(Search search) throws Exception {
 		return sqlSession.selectList("UserMapper.getUserList", search);
 	}
-
+	public List<User> autoUserList(Search search) throws Exception {
+		System.out.println("auto");
+		return sqlSession.selectList("UserMapper.autoUserList", search);
+		
+	}
 	// 게시판 Page 처리를 위한 전체 Row(totalCount)  return
 	public int getTotalCount(Search search) throws Exception {
 		return sqlSession.selectOne("UserMapper.getTotalCount", search);

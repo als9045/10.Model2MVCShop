@@ -18,6 +18,8 @@ public interface UserService {
 	// 회원정보리스트 
 	public Map<String , Object> getUserList(Search search) throws Exception;
 	
+	//aoto
+	public Map<String , Object> autoUserList(Search search) throws Exception;
 	// 회원정보수정
 	public void updateUser(User user) throws Exception;
 	

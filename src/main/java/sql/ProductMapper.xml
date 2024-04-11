@@ -13,8 +13,8 @@
 		<result property="prodDetail" 		column="PROD_DETAIL" 				jdbcType="VARCHAR" />
 		<result property="prodName" 			column="PROD_NAME" 				jdbcType="VARCHAR" />
 		<result property="regDate" 				column="REG_DATE" 				jdbcType="VARCHAR" />
-		<result property="price" 			column="PRICE" 				  />
-		<result property="prodNo" 			column="PROD_NO" 			 />
+		<result property="price" 			column="PRICE" 						jdbcType="NUMERIC" />
+		<result property="prodNo" 			column="PROD_NO" 					jdbcType="NUMERIC" />
 	</resultMap>
 														
 	
@@ -23,8 +23,8 @@
 	 	INSERT
 		INTO product( prod_no , prod_name , prod_detail , image_file , price , manufacture_day, reg_date) 
 		VALUES	 (	seq_product_prod_no.NEXTVAL,
-						#{prodName} , #{prodDetail} , #{fileName} , #{price} , 
-							#{manuDate}, SYSDATE )
+						#{prodName} ,  #{prodDetail:VARCHAR} , #{fileName:VARCHAR} , #{price} , 
+							#{manuDate:VARCHAR}, SYSDATE )
 	 </insert>
 	 <!-- SQL : SELECT ONE -->
 	 <select 	id="getProduct"	parameterType="INTEGER"	resultMap="productSelectMap">
@@ -50,7 +50,7 @@
 	  	FROM (	
 	  	SELECT inner_table.* , ROWNUM AS row_seq
 	  	FROM (	
-	  		SELECT prod_no , prod_detail , price, prod_name , reg_date
+	  		SELECT prod_no , prod_detail , price, prod_name , reg_date, IMAGE_FILE
 			FROM product
 			<if test="searchCondition != null">
 			<where>

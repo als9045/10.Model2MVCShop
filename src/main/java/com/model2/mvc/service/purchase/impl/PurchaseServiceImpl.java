@@ -21,6 +21,7 @@ public class PurchaseServiceImpl implements PurchaseService{
 	private PurchaseDao purchaseDao;
 	public PurchaseServiceImpl() {
 		this.purchaseDao =purchaseDao;
+		System.out.println("purchasesimple========");
 	}
 	@Override
 	public Purchase addPurchase(Purchase purchase) throws Exception {

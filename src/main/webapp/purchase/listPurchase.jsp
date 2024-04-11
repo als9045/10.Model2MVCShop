@@ -5,21 +5,92 @@
 <%@ page import="com.model2.mvc.common.*" %>  
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%> 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
 <!DOCTYPE html>
 <html>
 <head>
 <title>구매 목록조회</title>
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
-
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 <script type="text/javascript">
-	function fncGetUserList() {
-		document.detailForm.submit();
-	}
+function fncGetPurchaseList(currentPage) {
+	
+	$("#currentPage").val(currentPage)
+
+	$("form").attr("method", "POST").attr("action",
+			"/purchase/listPurchase").submit()
+}
+
 	
 	let menu = "${menu}";
+	let tranNo ="${purchase.tranNo}";
 	console.log("현재 접속자는 "+menu)
+	console.log("tranNo "+tranNo)
+	
+
+		
+		
+		$(function() {
+		
+			$('.ct_list_pop td b:contains("배송하기")').on('click', function() {
+		        // 배송 처리할 tranNo 값을 가져옵니다.
+		        
+		        
+		        
+		        let tranNo = $(this).data('tranno');
+		        console.log("tranNo====: " + tranNo);
+		        
+		        let updateTranCode = 2;
+		        
+		        let target = $('.ct_list_pop td b:contains("배송하기")');
+		        
+		        $.ajax({
+		            url: "/purchase/json/updateTranCode/" + tranNo + "/" + updateTranCode,
+		            method: "GET",
+		            contentType: "application/json",
+		            dataType: "json",
+		            success: function(data) {
+		                target.parent().text("배송중"); 
+		                target.remove();
+		            },
+		        });
+		    });
+						
+			
+		$('.ct_list_pop td b:contains("물건도착")').on('click', function() {
+        // 배송 처리할 tranNo 값을 가져옵니다.
+        
+       
+        
+        let tranNo = $(this).data('tranno');
+        console.log("tranNo: " + tranNo);
+        
+        let updateTranCode = 3;
+        
+        let target = $(this);
+        
+        $.ajax({
+            url: "/purchase/json/updateTranCode/" + tranNo + "/" + updateTranCode,
+            method: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            success: function(data) {
+                /* target.parent().text("배송완료"); */
+                target.remove();
+            },
+            
+        });
+    });
+
+	
+	
+	
+	
+	});
+
 </script>
 </head>
 
@@ -29,8 +100,8 @@
 
 
 		<!-- <form name="detailForm" action="/purchase/listPurchase?menu=${param.menu}" method="post"> -->
-		<form name="detailForm">
-		<input type="hidden" name="currentPage" value="1" />
+		<form name="detailForm" action="/purchase/listPurchase?menu=${menu}" method="post">
+
 			<table width="100%" height="37" border="0" cellpadding="0"
 				cellspacing="0">
 				<tr>
@@ -83,34 +154,40 @@
 				<tr>
 						  <td class="ct_list_b" width="50">No</td>
       					  <td class="ct_line02" width="10"></td>
-       					  <td class="ct_list_b" width="250">상품명<br>
+      					   <td class="ct_list_b" width="100">상품사진</td>
+        				 <td class="ct_line02" width="10"></td>
+       					  <td class="ct_list_b" width="120">상품명<br>
         				  <h7>(상품명 click:상세정보)</h7></td>
         				  <td class="ct_line02" width="10"></td>
         				  <td class="ct_list_b" width="100">주문일</td>
         				  <td class="ct_line02" width="10"></td>
         			   	  <td class="ct_list_b" width="100">배송날짜</td>
         				  <td class="ct_line02" width="10"></td>
-        				  <td class="ct_list_b" width="250">배송현황</td>
+        				  <td class="ct_list_b" width="150">배송현황</td>
 				</tr>
 				<tr>
 					<td colspan="11" bgcolor="808285" height="1"></td>
 				</tr>
 				<c:forEach var="purchase" items="${list}">
+						<c:set var="i" value="${ i+1 }" />
 					<tr class="ct_list_pop">
+						<td align="center">${ i }</td>
+						<td></td>
 						<td align="center"  height="80px">
 						<img src="/images/uploadFiles/${purchase.purchaseProd.fileName}" width="100px" height="100px" />
 						</td>
 						<td></td>
 						<td class="ct_list_b" width="150">
-						<a <%-- href="/purchase/getPurchase?tranNo=${purchase.tranNo}" --%>>
-							${purchase.purchaseProd.prodName}</a>
+						<a href="/purchase/getPurchase?tranNo=${purchase.tranNo}">
+							${purchase.purchaseProd.prodName}</a> 
+					
 						</td>
 						<td></td>
-						<td align="left">${purchase.orderDate}</td>
+						<td align="center">${purchase.orderDate}</td>
 						<td></td>
-						<td align="left">${purchase.divyDate}</td>
+						<td align="center">${purchase.divyDate}</td>
 						<td></td>
-						<td align="left">
+						<td align="center">
 						<c:if test="${fn:trim(purchase.tranCode) eq '1' }">
 						    구매완료
 						    <c:choose>
@@ -135,8 +212,7 @@
 						    </c:choose>
 						</c:if>
 						
-						<c:set var="trim_trancod" value="${fn:trim(purchase.tranCode)}"/>
-						<c:if test="trim_trancod == '3' ">
+						<c:if test="${fn:trim(purchase.tranCode) eq '3' }">
 						    배송완료
 						</c:if>
 						</td>
@@ -144,6 +220,9 @@
 					</tr>
 				</c:forEach>
 			</table>
+			
+		
+		
 		</form>
 
 	</div>

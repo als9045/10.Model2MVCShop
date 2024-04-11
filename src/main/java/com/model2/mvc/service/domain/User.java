@@ -23,7 +23,7 @@ public class User {
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	// JSON ==> Domain Object  Binding을 위해 추가된 부분
 	private String regDateString;
-
+	private boolean code;
 	
 	
 	///Constructor
@@ -115,8 +115,10 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "UserVO : [userId] "+userId+" [userName] "+userName+" [password] "+password+" [role] "+ role
-			+" [ssn] "+ssn+" [phone] "+phone+" [email] "+email+" [regDate] "+regDate;
+		return "User [userId=" + userId + ", userName=" + userName + ", password=" + password + ", role=" + role
+				+ ", ssn=" + ssn + ", phone=" + phone + ", addr=" + addr + ", email=" + email + ", regDate=" + regDate
+				+ ", phone1=" + phone1 + ", phone2=" + phone2 + ", phone3=" + phone3 + ", regDateString="
+				+ regDateString + ", code=" + code + "]";
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -141,5 +143,13 @@ public class User {
 
 	public void setRegDateString(String regDateString) {
 		this.regDateString = regDateString;
+	}
+
+	public boolean isCode() {
+		return code;
+	}
+
+	public void setCode(boolean code) {
+		this.code = code;
 	}
 }

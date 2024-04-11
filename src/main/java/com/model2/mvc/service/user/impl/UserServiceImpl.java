@@ -61,6 +61,19 @@ public class UserServiceImpl implements UserService{
 		if(user != null) {
 			result=false;
 		}
+		
 		return result;
+	}
+
+	@Override
+	public Map<String, Object> autoUserList(Search search) throws Exception {
+		List<User> list= userDao.getUserList(search);
+		int totalCount = userDao.getTotalCount(search);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("list", list );
+		map.put("totalCount", new Integer(totalCount));
+		
+		return map;
 	}
 }

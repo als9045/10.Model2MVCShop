@@ -12,7 +12,7 @@
 		<result property="paymentOption" column="payment_option" jdbcType="CHAR" />
 		<result property="receiverName" column="receiver_name" jdbcType="VARCHAR" />
 		<result property="receiverPhone" column="receiver_phone" jdbcType="VARCHAR" />
-		<result property="divyAddr" column="DEMAILADDR" jdbcType="VARCHAR" />
+		<result property="divyAddr" column="DEMAIADDR" jdbcType="VARCHAR" />
 		<result property="divyRequest" column="dlvy_request" jdbcType="VARCHAR" />
 		<result property="tranCode" column="tran_status_code" jdbcType="CHAR" />
 		<result property="orderDate" column="ORDER_DATA" jdbcType="DATE" />
@@ -51,7 +51,7 @@
 		t.PAYMENT_OPTION,
 		t.RECEIVER_NAME,
 		t.RECEIVER_PHONE,
-		t.DEMAILADDR,
+		t.DEMAIADDR,
 		t.DLVY_REQUEST,
 		t.TRAN_STATUS_CODE,
 		t.ORDER_DATA,
@@ -110,7 +110,7 @@
 		#{divyRequest:VARCHAR},
 		#{divyDate:VARCHAR},
 		SYSDATE,
-		'2')
+		'1')
 		
 	</insert>
 	
@@ -138,7 +138,7 @@
 			payment_option = #{paymentOption:CHAR},
 			receiver_name = #{receiverName:VARCHAR},
 			receiver_phone = #{receiverPhone:VARCHAR},
-			demailaddr = #{divyAddr:VARCHAR},
+			DEMAIADDR = #{divyAddr:VARCHAR},
 			dlvy_request = #{divyRequest:VARCHAR},
 			dlvy_date = #{divyDate:DATE},
 			
