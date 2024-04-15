@@ -9,6 +9,17 @@
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
 <!-- jQuery UI CDN(Content Delivery Network) 호스트 사용 -->
 <!-- CDN(Content Delivery Network) 호스트 사용 -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+	crossorigin="anonymous">
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+	crossorigin="anonymous"></script>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
 	
@@ -85,32 +96,40 @@
 				            let prodList = data.list;
 				            let resultPage = data.resultPage;
 
-				            prodList.forEach(function (product) {
-				                // 동적으로 생성되는 행에 .product-row 클래스를 추가하여 스타일 적용
-				                let row = "<tr class='ct_list_pop'>"
-				                    + "<td align=center width=100>" + product.prodName + "</td>"
-				                    + "<td></td>"
-				                    + "<td align=center width=100>" + product.prodNo + "</td>"
-				                    + "<a href='/product/";
+				         // Assuming prodList is an array of objects containing product information
+				            prodList.forEach(function (product, index) {
+				                // Create table row for each product
+				            	let row = "<tr>" +
+				                "<td align=\"center\">" + (index + 1) + "</td>" +
+				                "<td></td>" +
+				                "<td align=\"center\" width=\"100\">" + product.prodName + "</td>" +
+				                "<td><a href=\"/product/";
 
-				                if ("${param.menu}" === 'manage') {
-				                    row += "updateProduct?prodNo=" + product.prodNo + "&menu=manage";
-				                } else if ("${param.menu}" === 'search') {
-				                    row += "getProduct?prodNo=" + product.prodNo + "&menu=search";
-				                }
+				            if ("${param.menu}" === 'manage') {
+				                row += "updateProduct?prodNo=" + product.prodNo + "&menu=manage";
+				            } else if ("${param.menu}" === 'search') {
+				                row += "getProduct?prodNo=" + product.prodNo + "&menu=search";
+				            }
+				            row += "\">"
+				                +"<td align=\"center\">" + product.prodNo + "</td>" +
+				                "<td></td>" +
+				                "<td align=\"center\">" + product.price + "</td>" +
+				                "<td></td>" +
+				                "<td align=\"center\" width=\"100\">" +
+				                "<img src=\"/images/uploadFiles/" + product.fileName + "\" width=\"100px\" height=\"100px\"/>" +
+				                "</td>" +
+				                "<td></td>" +
+				                "</tr>";
 
-				                row += "'/>"
-				                    + "<td></td>"
-				                    + "<td align=center>" + product.price + "</td>"
-				                    + "<td></td>"
-				                    + "<td align=center width=100>" + product.regDate + "</td>"
-				                    + "<td></td>"
-				                    + "</tr>";
+				            $('.cex tbody').append(row);
 
-				                $('.cex').append(row);
+
 				            });
 
+				            // Enable infinite scroll
 				            infiniteScrollEnabled = true;
+
+
 				        },
 				    });
 				}
@@ -294,11 +313,11 @@
 		<td class="ct_line02"></td>
 		<td class="ct_list_b" width="150">상품명</td>
 		<td class="ct_line02"></td>
-		<td class="ct_list_b" width="150">이미지</td>
+		<td class="ct_list_b" width="150">상품번호</td>
 		<td class="ct_line02"></td>
 		<td class="ct_list_b" width="250">가격</td>	
 		<td class="ct_line02" ></td>
-		<td class="ct_list_b" width="700">등록일</td>	
+		<td class="ct_list_b" width="700">이미지</td>	
 	</tr>
 	<tr>
 		<td colspan="11" bgcolor="808285" height="1"></td>
